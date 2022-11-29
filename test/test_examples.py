@@ -1,6 +1,8 @@
 """Test client async."""
 import asyncio
 import logging
+import threading
+import time
 from threading import Thread
 from time import sleep
 
@@ -120,7 +122,10 @@ def test_exp_sync_server_client(
     sleep(1)
     test_client = setup_sync_client(args=args)
     run_sync_client(test_client, modbus_calls=run_sync_calls)
+    time.sleep(1)  # this line causes this test to fail,
+    # without line test passes
     ServerStop()
+    assert threading.active_count() == 1
 
 
 @pytest.mark.parametrize("test_port_offset", [30])
